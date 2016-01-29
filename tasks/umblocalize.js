@@ -65,6 +65,7 @@ module.exports = function(grunt) {
         }
       }
       if (foundArea === undefined) {
+        area.$.missingTranslation = true;
         areas.splice(pos, 0, area);
         updateLocalizationFile = true;
       } else {
@@ -84,6 +85,7 @@ module.exports = function(grunt) {
         }
       }
       if (foundKey === undefined) {
+        key.$.missingTranslation = true;
         keys.splice(pos, 0, key);
         updateLocalizationFile = true;
       }
