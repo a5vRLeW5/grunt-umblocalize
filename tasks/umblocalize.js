@@ -89,11 +89,14 @@ module.exports = function(grunt) {
       }
     }
 
+    grunt.log.writeln('Found ' + this.files.length + ' filegroup(s)');
+
     // Iterate over all specified file groups.
     this.files.forEach(function(filegroup) {
+      grunt.log.writeln('Processing ""' + filegroup.dest + '"" with ' + filegroup.src.length + ' file(s)');
       // Read the base file from the file group
       var filegroupPath = filegroup.src[0].substring(0, filegroup.src[0].lastIndexOf('/') + 1);
-      var baseFileData = grunt.file.read('lang/en_us.xml');
+      var baseFileData = grunt.file.read(filegroupPath + options.baseFile);
       xmlParser.parseString(baseFileData, function (err, parsed) {
         baseParsed = parsed;
 
@@ -115,15 +118,17 @@ module.exports = function(grunt) {
           processXmlString(data, function (d) {
             // If the file was updated, write it to disk
             if (updateLocalizationFile) {
-              var outputFilePath = options.outputPath + filepath;
-              grunt.file.write(outputFilePath, d);
-              grunt.log.writeln('Updated "' + outputFilePath + '"');
+              if (options.outputPath.length > 0) {
+                filepath = options.outputPath + filepath.replace('../', '');
+              }
+              grunt.file.write(filepath, d);
+              grunt.log.writeln('Updated "' + filepath + '"');
               filesUpdated++;
             }
             filesProcessed++;
           });
         });
-        grunt.log.writeln(filesProcessed + ' localization files in "' + filegroup.dest + '" processed (' + filesUpdated + ' updated)');
+        grunt.log.writeln(filesProcessed + ' localization file(s) in "' + filegroup.dest + '" processed (' + filesUpdated + ' updated)');
       });
     });
   });
